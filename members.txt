@@ -1,0 +1,6 @@
+1 Handong VIP 010-1234-5678 19990101 Pohang
+2 Heunghae Gold 010-1111-2222 19700321 Seoul
+3 Bokdong Gold 010-1234-1234 20000819 Seoul
+4 Hangbok Family 010-9999-8888 19991225 Daejeon
+5 Sangjin Family 010-2890-4396 19920726 Incheon
+9 Gildong Gold 010-4904-2342 19800102 Seoul
