@@ -1,4 +1,5 @@
 #include "members.h"
+//#define DEBUG
 
 void create_record();
 void read_record();
@@ -104,7 +105,7 @@ void create_record(){
     printf("ID > ");
     scanf("%d", &id);
     if(m_search_by_name(name)) {
-        printf("Duplicated name!\n");
+        printf("Duplicated ID!\n");
         return;
     }
     printf("Membership > ");
@@ -197,39 +198,42 @@ void search_record_by_membership(){
 }
 
 void update_record(){
-    printf("Not implemented yet\n");
-    /*
-    char name[20], phone[20], city[20];
-    int year;  
-    printf("Enter a name > ");
-    scanf("%s", name);
+    char name[20], membership[20], phone[20], city[20];
+    int id, date;
+    printf("Enter ID > ");
+    scanf("%d", &id);
 
-    T_Record* p = m_search_by_name(name);
-    if(p) {
+    T_Record* records[MAX_MEMBERS];
+    int size = m_get_all_by_id(records, id);
+    
+    if(size) {
         printf("Enter a updated info.\n");
+        printf("Enter name > ");
+        scanf("%s", name);
+        printf("Membership > ");
+        scanf("%s", membership);
         printf("Phone > ");
         scanf("%s", phone);
-        printf("Birth year > ");
-        scanf("%d", &year);
+        printf("Birthdate > ");
+        scanf("%d", &date);
         printf("City > ");
         scanf("%s", city);
 
-        m_update(p, phone, year, city);
+        m_update(records[0], name, membership, phone, date, city);
     }
     else {
         printf("No such member!\n");
     }
-    */
+    
 }
 
 void delete_record(){
-    printf("Not implemented yet\n");
-    /*
-    char name[20];
-    printf("Enter a name > ");
-    scanf("%s", name);
+    int id;
+    printf("Enter ID > ");
+    scanf("%d", &id);
 
-    T_Record* p = m_search_by_name(name);
+    T_Record* p = m_search_by_id(id);
+
     if(p) {
         m_delete(p);
         printf("The record is deleted!\n");
@@ -237,11 +241,18 @@ void delete_record(){
     else {
         printf("No such member!\n");
     }
-    */
 }
 
 void delete_record_all() {
-    printf("Not implemented yet\n");
+    printf("All records will be deleted.\n");
+    printf("1.Yes 0.No > ");
+    int yesno;
+    scanf("%d", &yesno);
+    if (yesno == 0) return;
+
+    m_init();
+
+    printf("All records are deleted!\n");
 }
 
 void load_file(){
@@ -304,15 +315,112 @@ void save_file(){
 }
 
 void defrag_record() {
-    printf("Not implemented yet\n");
+    T_Record** members = m_get_records();
+
+#ifdef DEBUG
+    printf("Before Defrag:\n");
+    for (int i = 0; i < MAX_MEMBERS; i++) {
+        if (members[i] != NULL) {
+            printf("Index %d = Member [ID:%d, Name:%s]\n", i, members[i]->id, members[i]->name);
+        }
+        else {
+            printf("Index %d = NULL\n", i);
+        }
+    }
+#endif
+
+    for (int i = 0; i < MAX_MEMBERS; i++) { // 레코드 인덱스 하나하나 확인
+        if (members[i] == NULL) {   // 빈 인덱스 발견
+            for (int j = i+1; j < MAX_MEMBERS; j++) {
+                if (members[j] != NULL) {       // 가장 가까운 회원 찾으면
+                    members[i] = members[j];    // 빈 인덱스로 이동
+                    members[j] = NULL;          // 회원이 있던 자리는 비운다
+                    break;
+                }
+            }
+        }
+    }
+
+    printf("Records are defragged.\n");
+    for (int i = 0; i < MAX_MEMBERS; i++) {
+        if (members[i] != NULL) {
+            printf("Index %d = Member [ID:%d, Name:%s]\n", i, members[i]->id, members[i]->name);
+        }
+        else {
+            printf("Index %d = NULL\n", i);
+        }
+    }
 }
 
 void sort_record() {
-    printf("Not implemented yet\n");
+    int condition;
+    int size = m_count();
+    T_Record* records[MAX_MEMBERS];
+    m_get_all(records);
+
+    // 정렬 조건을 묻는다
+    printf("Sort by: 1.ID 2.Name 3.Membership 4.Cancel > ");
+    scanf("%d", &condition);
+    switch (condition) {
+        case 1:
+            m_sort_record_by_id(records, size);
+            break;
+        case 2:
+            m_sort_record_by_name(records, size);
+            break;
+        case 3:
+            m_sort_record_by_membership(records, size);
+            break;
+        case 4:
+        default:
+            break;
+    }
+
+    for(int i=0; i<size; i++){
+        T_Record* p = records[i];
+        printf("%d. %s\n", i+1, m_to_string(p));
+    }
 }
 
 void sort_save_record() {
-    printf("Not implemented yet\n");
+    int condition;
+    int size = m_count();
+    T_Record* records[MAX_MEMBERS];
+    m_get_all(records);
+
+    // 정렬 조건을 묻는다
+    printf("Sort by: 1.ID 2.Name 3.Membership 4.Cancel > ");
+    scanf("%d", &condition);
+    switch (condition) {
+        case 1:
+            m_sort_record_by_id(records, size);
+            break;
+        case 2:
+            m_sort_record_by_name(records, size);
+            break;
+        case 3:
+            m_sort_record_by_membership(records, size);
+            break;
+        case 4:
+        default:
+            break;
+    }
+
+    // 파일 저장
+    FILE* f = fopen("sorted.txt", "w");
+#ifdef DEBUG
+    if (f == NULL)
+        printf("[load_file] file not opend\n");
+#endif
+    for(int i=0; i<size; i++){
+        T_Record* p = records[i];
+        fprintf(f,"%s\n", m_to_string_save(p));
+#ifdef DEBUG
+        printf("[Save] write %s\n", records[i]->name);
+#endif
+    }
+    printf("Sorted records were saved.\n");
+    fclose(f);
 }
 
 void print_stats() {
@@ -446,3 +554,4 @@ void debug_records(){
         printf("%d - %p\n",i, records[i]);
     }    
 }
+

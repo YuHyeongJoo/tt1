@@ -3,14 +3,18 @@ CFLAGS = -g -Wall
 TARGETS = main
 OBJECTS = main.c members.o
 .SUFFIXES = .c .o
-main_debug : $(TARGETS)
-main_debug : DEBUGOPTION = -DDEBUG
 
 $(TARGETS) : $(OBJECTS)
-	$(CC) $(CFLAGS) $(DEBUGOPTION) -o $@ $^
+	$(CC) $(CFLAGS) -o $@ $^
 
 .c.o :
-	$(CC) $(CFLAGS) $(DEBUGOPTION) -c $<
+	$(CC) $(CFLAGS) -c $<
+
+$(TARGETS) : $(OBJECTS)
+	$(CC) $(CFLAGS) -o $@ $^
+
+.c.o :
+	$(CC) $(CFLAGS) -c $<
 
 clean :
 	rm *.o $(TARGETS)

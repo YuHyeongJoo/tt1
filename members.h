@@ -3,6 +3,7 @@
 #include <string.h>
 
 #define MAX_MEMBERS 10      // 저장할 수 있는 회원 레코드 최대 갯수
+//T_Record* members[MAX_MEMBERS]; // 회원정보데이터 (전역)
 
 // 회원 정보 레코드의 데이터 타입을 정의함
 typedef struct st_member {
@@ -22,8 +23,9 @@ void m_create(int i, char* n, char* m, char* ph, int b, char* c);   // 회원정
 T_Record* m_search_by_id(int id);                // 회원번호가 일치하는 회원 레코드 포인터 찾기
 T_Record* m_search_by_name(char* n);             // 이름이 일치하는 회원 레코드 포인터 찾기
 T_Record* m_search_by_membership(char* m);       // 회원등급이 일치하는 회원 레코드 포인터 찾기
-void m_update(T_Record* p, char* ph, int b, char* c);  // 특정 회원 레코드의 정보 업데이트
+void m_update(T_Record* p, char* n, char* m, char* ph, int b, char* c);  // 특정 회원 레코드의 정보 업데이트
 void m_delete(T_Record* p);     // 특정 회원 레코드의 회원정보 제거
+T_Record** m_get_records();     // 회원 레코드 리턴
 void m_get_all(T_Record* a[]);  // 회원정보가 들어있는 모든 레코드 포인터의 배열을 만들기
 void m_get_all2(T_Record* a[]);  // 모든 레코드 포인터의 배열을 만들기 (for debug)
 char* m_to_string(T_Record* p); // 특정 회원 레코드의 내용을 문자열로 가져오기
@@ -40,5 +42,9 @@ void m_init(); // 모든 레코드 제거
 char* m_to_string_save(T_Record* p); // 특정 회원 레코드의 내용을 파일저장용 문자열로 가져오기
 void m_read_file(T_Record* p, char* filename);  // 회원 레코드 포인터 배열을 가져와 파일에 쓴다
 void m_defrag(T_Record* a[]);   // 회원 레코드 포인터 배열에 조각모음을 실시
-void m_sort_record(T_Record* a[], int condition);  // 회원 레코드 포인터 배열을 조건에 맞게 정렬
+void m_sort_record_by_id(T_Record* a[], int size);  // 회원 레코드 포인터 배열을 회원번호 오름차순으로 정렬
+void m_sort_record_by_name(T_Record* a[], int size);  // 회원 레코드 포인터 배열을 이름 오름차순으로 정렬
+void m_sort_record_by_membership(T_Record* a[], int size);  // 회원 레코드 포인터 배열을 회원등급 내림차순으로 정렬
+void m_swap_record(T_Record* a, T_Record* b);   // (m_sort_record 헬프함수) 레코드의 내용을 교환
+int m_membership_grade(char* m);                // (m_sort_record 헬프함수) 회원등급을 매김
 char* m_to_string_stats(T_Record* a[]); // 회원 레코드 통계를 잡아 문자열로 리턴

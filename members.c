@@ -71,7 +71,9 @@ T_Record* m_search_by_membership(char* m){
     return NULL;
 }
 
-void m_update(T_Record* p, char* ph, int b, char* c){
+void m_update(T_Record* p, char* n, char* m, char* ph, int b, char* c){
+    strcpy(p->name, n);
+    strcpy(p->membership, m);
     strcpy(p->phone, ph);
     p->birthdate = b;
     strcpy(p->city, c);
@@ -93,6 +95,10 @@ char* m_to_string(T_Record* p){
     static char str[120];
     sprintf(str, "[ID:%d] %s / %s / %s / %d / %s", p->id, p->name, p->membership, p->phone, p->birthdate, p->city);
     return str;
+}
+
+T_Record** m_get_records() {
+    return members;
 }
 
 void m_get_all(T_Record* a[]){
@@ -195,4 +201,62 @@ char* m_to_string_save(T_Record* p){
     static char str[120];
     sprintf(str, "%d %s %s %s %d %s", p->id, p->name, p->membership, p->phone, p->birthdate, p->city);
     return str;
+}
+
+void m_sort_record_by_id(T_Record* a[], int size) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 1; j < size; j++) {
+            if (a[j-1]->id > a[j]->id) {
+                m_swap_record(a[j-1], a[j]);
+            }
+        }
+    }
+}
+
+void m_sort_record_by_name(T_Record* a[], int size) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 1; j < size; j++) {
+            if (strcmp(a[j-1]->name, a[j]->name) > 0) {
+                m_swap_record(a[j-1], a[j]);
+            }
+        }
+    }
+}
+
+void m_sort_record_by_membership(T_Record* a[], int size) {
+    for (int i = 0; i < size; i++) {
+        for (int j = 1; j < size; j++) {
+            int grade_j_1 = m_membership_grade(a[j-1]->membership);
+            int grade_j = m_membership_grade(a[j]->membership);
+
+            if (grade_j_1 > grade_j) {
+                m_swap_record(a[j-1], a[j]);
+            }
+        }
+    }
+}
+
+void m_swap_record(T_Record* a, T_Record* b) {
+    T_Record temp;
+    temp = *a;
+    *a = *b;
+    *b = temp;
+}
+
+int m_membership_grade(char* m) {
+    if (strcmp(m, "VIP") == 0) {
+        return 1;
+    }
+    else if (strcmp(m, "Gold") == 0) {
+        return 2;
+    }
+    else if (strcmp(m, "Silver") == 0) {
+        return 3;
+    }
+    else if (strcmp(m, "Family") == 0) {
+        return 4;
+    }
+    else {
+        return -1;
+    }
 }
