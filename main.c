@@ -287,9 +287,9 @@ void load_file(){
         printf("[Load] load %s\n", name);
 #endif
     }
-#ifdef DEBUG
+
     printf("%d records are read from file!\n", m_count());    
-#endif
+
     fclose(f);
 }
 

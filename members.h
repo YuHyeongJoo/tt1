@@ -2,7 +2,7 @@
 #include <stdlib.h>
 #include <string.h>
 
-#define MAX_MEMBERS 10      // 저장할 수 있는 회원 레코드 최대 갯수
+#define MAX_MEMBERS 50      // 저장할 수 있는 회원 레코드 최대 갯수
 //T_Record* members[MAX_MEMBERS]; // 회원정보데이터 (전역)
 
 // 회원 정보 레코드의 데이터 타입을 정의함
